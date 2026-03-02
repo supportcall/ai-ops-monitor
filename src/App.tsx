@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ProviderDetail from "./pages/ProviderDetail";
+import AWSPage from "./pages/AWSPage";
+import AzurePage from "./pages/AzurePage";
+import GoogleCloudPage from "./pages/GoogleCloudPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,6 +21,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/provider/:slug" element={<ProviderDetail />} />
+          <Route path="/cloud/aws" element={<AWSPage />} />
+          <Route path="/cloud/azure" element={<AzurePage />} />
+          <Route path="/cloud/google" element={<GoogleCloudPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

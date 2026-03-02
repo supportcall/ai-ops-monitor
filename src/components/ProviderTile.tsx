@@ -24,14 +24,21 @@ const tileBorderClass: Record<ProviderStatus, string> = {
   unknown: "border-border hover:border-muted-foreground/30",
 };
 
+const cloudPageRoutes: Record<string, string> = {
+  "aws-bedrock": "/cloud/aws",
+  "azure-openai": "/cloud/azure",
+  "google-gemini": "/cloud/google",
+};
+
 const ProviderTile = ({ provider, index }: ProviderTileProps) => {
   const navigate = useNavigate();
   const timeSinceCheck = Math.floor((Date.now() - provider.lastCheck.getTime()) / 1000);
   const timeStr = timeSinceCheck < 60 ? `${timeSinceCheck}s ago` : `${Math.floor(timeSinceCheck / 60)}m ago`;
+  const targetRoute = cloudPageRoutes[provider.slug] || `/provider/${provider.slug}`;
 
   return (
     <button
-      onClick={() => navigate(`/provider/${provider.slug}`)}
+      onClick={() => navigate(targetRoute)}
       className={`group relative bg-card border ${tileBorderClass[provider.status]} rounded-lg p-4 text-left transition-all duration-300 hover:bg-secondary/50 animate-fade-in-up`}
       style={{ animationDelay: `${index * 40}ms` }}
     >
