@@ -11,14 +11,21 @@ const providerDefs = [
   { id: "google", name: "Google Gemini", slug: "google-gemini", officialStatusUrl: "https://status.cloud.google.com", isOfficial: true },
   { id: "azure", name: "Azure OpenAI", slug: "azure-openai", officialStatusUrl: "https://status.azure.com", isOfficial: true },
   { id: "aws", name: "AWS Bedrock", slug: "aws-bedrock", officialStatusUrl: "https://health.aws.amazon.com", isOfficial: true },
-  { id: "cohere", name: "Cohere", slug: "cohere", officialStatusUrl: null, isOfficial: false },
-  { id: "mistral", name: "Mistral AI", slug: "mistral", officialStatusUrl: null, isOfficial: false },
-  { id: "groq", name: "Groq", slug: "groq", officialStatusUrl: null, isOfficial: false },
+  { id: "cohere", name: "Cohere", slug: "cohere", officialStatusUrl: "https://status.cohere.com", isOfficial: true },
+  { id: "mistral", name: "Mistral AI", slug: "mistral", officialStatusUrl: "https://status.mistral.ai", isOfficial: true },
+  { id: "groq", name: "Groq", slug: "groq", officialStatusUrl: "https://status.groq.com", isOfficial: true },
   { id: "perplexity", name: "Perplexity", slug: "perplexity", officialStatusUrl: null, isOfficial: false },
   { id: "xai", name: "xAI (Grok)", slug: "xai", officialStatusUrl: null, isOfficial: false },
   { id: "huggingface", name: "Hugging Face", slug: "huggingface", officialStatusUrl: "https://status.huggingface.co", isOfficial: true },
-  { id: "replicate", name: "Replicate", slug: "replicate", officialStatusUrl: null, isOfficial: false },
+  { id: "replicate", name: "Replicate", slug: "replicate", officialStatusUrl: "https://status.replicate.com", isOfficial: true },
   { id: "stability", name: "Stability AI", slug: "stability", officialStatusUrl: null, isOfficial: false },
+  { id: "together", name: "Together AI", slug: "together", officialStatusUrl: "https://status.together.ai", isOfficial: true },
+  { id: "deepseek", name: "DeepSeek", slug: "deepseek", officialStatusUrl: null, isOfficial: false },
+  { id: "meta", name: "Meta Llama (via API)", slug: "meta-llama", officialStatusUrl: null, isOfficial: false },
+  { id: "ai21", name: "AI21 Labs", slug: "ai21", officialStatusUrl: null, isOfficial: false },
+  { id: "fireworks", name: "Fireworks AI", slug: "fireworks", officialStatusUrl: "https://status.fireworks.ai", isOfficial: true },
+  { id: "anyscale", name: "Anyscale", slug: "anyscale", officialStatusUrl: null, isOfficial: false },
+  { id: "databricks", name: "Databricks DBRX", slug: "databricks", officialStatusUrl: "https://status.databricks.com", isOfficial: true },
 ];
 
 // Deterministic seed for consistent mock data
@@ -35,6 +42,8 @@ export function getProviders(): Provider[] {
     const overrides: Record<string, ProviderStatus> = {
       "groq": "degraded",
       "stability": "outage",
+      "deepseek": "degraded",
+      "anyscale": "partial",
     };
     const finalStatus = overrides[def.id] || status;
     
