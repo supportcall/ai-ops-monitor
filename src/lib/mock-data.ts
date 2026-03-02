@@ -26,6 +26,7 @@ const providerDefs = [
   { id: "fireworks", name: "Fireworks AI", slug: "fireworks", officialStatusUrl: "https://status.fireworks.ai", isOfficial: true },
   { id: "anyscale", name: "Anyscale", slug: "anyscale", officialStatusUrl: null, isOfficial: false },
   { id: "databricks", name: "Databricks DBRX", slug: "databricks", officialStatusUrl: "https://status.databricks.com", isOfficial: true },
+  { id: "claude-code", name: "Claude Code", slug: "claude-code", officialStatusUrl: "https://status.anthropic.com", isOfficial: true },
 ];
 
 // Deterministic seed for consistent mock data

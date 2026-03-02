@@ -307,6 +307,7 @@ These can be changed in **Admin → Settings** without editing config files:
 | 18 | Fireworks AI | `fireworks` | https://status.fireworks.ai | Statuspage.io JSON |
 | 19 | Anyscale | `anyscale` | *(none — synthetic only)* | — |
 | 20 | Databricks DBRX | `databricks` | https://status.databricks.com | Statuspage.io JSON |
+| 21 | Claude Code | `claude-code` | https://status.anthropic.com | Statuspage.io JSON |
 
 ### Default Endpoints Per Provider
 
