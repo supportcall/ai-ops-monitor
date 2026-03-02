@@ -244,6 +244,7 @@ class DB
             ['Fireworks AI', 'fireworks', 'https://status.fireworks.ai', 'json', '{"api_base":"https://api.fireworks.ai"}'],
             ['Anyscale', 'anyscale', null, null, '{"api_base":"https://api.endpoints.anyscale.com"}'],
             ['Databricks DBRX', 'databricks', 'https://status.databricks.com', 'json', '{}'],
+            ['Claude Code', 'claude-code', 'https://status.anthropic.com', 'json', '{"api_base":"https://api.anthropic.com","service":"claude-code"}'],
         ];
 
         $now = date('Y-m-d H:i:s');
