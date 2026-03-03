@@ -1,5 +1,5 @@
 import { Incident } from "@/lib/types";
-import { getStatusLabel, getStatusBgClass } from "@/lib/mock-data";
+import { getStatusLabel, getStatusBgClass } from "@/lib/status-utils";
 import { AlertTriangle, CheckCircle2, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 

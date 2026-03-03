@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import NocHeader from "@/components/NocHeader";
 import UptimeHeatmap from "@/components/UptimeHeatmap";
 import LatencyChart from "@/components/LatencyChart";
-import { getUptimeHeatmap, getLatencyData, getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/mock-data";
+import { getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/status-utils";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { ArrowLeft, Globe, Shield, Server, Database, Cpu, HardDrive, Network, Cloud, Lock, BarChart3 } from "lucide-react";
 import { ProviderStatus } from "@/lib/types";
 
@@ -57,8 +58,9 @@ const categoryIcons: Record<string, typeof Server> = {
 
 const AzurePage = () => {
   const navigate = useNavigate();
-  const heatmap = getUptimeHeatmap("azure");
-  const latency = getLatencyData("azure");
+  const { data } = useDashboardData("azure-openai");
+  const heatmap = data?.providerHeatmap ?? data?.globalHeatmap ?? [];
+  const latency = data?.providerLatency ?? data?.globalLatency ?? [];
 
   const categories = [...new Set(azureServices.map(s => s.category))];
   const overallStatus: ProviderStatus = azureServices.some(s => s.status === "outage") ? "outage"
