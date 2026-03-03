@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import NocHeader from "@/components/NocHeader";
 import ProviderTile from "@/components/ProviderTile";
 import IncidentFeed from "@/components/IncidentFeed";
@@ -7,17 +8,25 @@ import StatusSummary from "@/components/StatusSummary";
 import { getProviders, getIncidents, getUptimeHeatmap, getLatencyData } from "@/lib/mock-data";
 
 const Index = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [lastChecked, setLastChecked] = useState<Date>(new Date());
+
+  const handleRefresh = useCallback(() => {
+    setRefreshKey((k) => k + 1);
+    setLastChecked(new Date());
+  }, []);
+
   const providers = getProviders();
   const incidents = getIncidents();
   const globalHeatmap = getUptimeHeatmap("global");
   const globalLatency = getLatencyData("global");
 
   return (
-    <div className="min-h-screen bg-background noc-grid-bg relative">
+    <div className="min-h-screen bg-background noc-grid-bg relative" key={refreshKey}>
       {/* Scanline effect */}
       <div className="scanline fixed inset-0 pointer-events-none z-40 h-[200%]" />
 
-      <NocHeader />
+      <NocHeader onRefresh={handleRefresh} lastChecked={lastChecked} />
 
       <main className="container mx-auto px-4 py-6 space-y-6 relative z-10">
         {/* Status summary */}
