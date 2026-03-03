@@ -1,34 +1,64 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import NocHeader from "@/components/NocHeader";
 import ProviderTile from "@/components/ProviderTile";
 import IncidentFeed from "@/components/IncidentFeed";
 import UptimeHeatmap from "@/components/UptimeHeatmap";
 import LatencyChart from "@/components/LatencyChart";
 import StatusSummary from "@/components/StatusSummary";
-import { getProviders, getIncidents, getUptimeHeatmap, getLatencyData } from "@/lib/mock-data";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { Loader2, WifiOff } from "lucide-react";
 
 const Index = () => {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [lastChecked, setLastChecked] = useState<Date>(new Date());
+  const { data, isLoading, isError, error, dataUpdatedAt, refetch } = useDashboardData();
 
   const handleRefresh = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-    setLastChecked(new Date());
-  }, []);
+    refetch();
+  }, [refetch]);
 
-  const providers = getProviders();
-  const incidents = getIncidents();
-  const globalHeatmap = getUptimeHeatmap("global");
-  const globalLatency = getLatencyData("global");
+  const lastChecked = dataUpdatedAt ? new Date(dataUpdatedAt) : new Date();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3 text-muted-foreground font-mono text-sm">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Fetching provider status…</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <WifiOff className="h-8 w-8 text-outage mx-auto" />
+          <p className="text-sm font-mono text-muted-foreground">Failed to load status data</p>
+          <p className="text-xs font-mono text-muted-foreground/60">{(error as Error)?.message}</p>
+          <button onClick={() => refetch()} className="text-xs font-mono text-primary hover:underline">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { providers, incidents, globalLatency, globalHeatmap, isLive } = data;
 
   return (
-    <div className="min-h-screen bg-background noc-grid-bg relative" key={refreshKey}>
+    <div className="min-h-screen bg-background noc-grid-bg relative">
       {/* Scanline effect */}
       <div className="scanline fixed inset-0 pointer-events-none z-40 h-[200%]" />
 
       <NocHeader onRefresh={handleRefresh} lastChecked={lastChecked} />
 
       <main className="container mx-auto px-4 py-6 space-y-6 relative z-10">
+        {/* Data source indicator */}
+        <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
+          <span className={`h-1.5 w-1.5 rounded-full ${isLive ? "bg-success" : "bg-warning"}`} />
+          <span>{isLive ? "Live data from PHP backend" : "Demo mode — set VITE_API_BASE_URL for live data"}</span>
+        </div>
+
         {/* Status summary */}
         <StatusSummary providers={providers} />
 
@@ -60,7 +90,7 @@ const Index = () => {
       <footer className="border-t border-border py-4 mt-8">
         <div className="container mx-auto px-4 flex items-center justify-between text-[10px] font-mono text-muted-foreground">
           <span>AI-NOC v1.0 — Network Operations Center</span>
-          <span>Data refreshes every 60s • Mock data for demonstration</span>
+          <span>Auto-refresh every 60s • {isLive ? "Live data" : "Mock data for demonstration"}</span>
         </div>
       </footer>
     </div>

@@ -1,5 +1,5 @@
 import { Provider, ProviderStatus } from "@/lib/types";
-import { getStatusLabel, getStatusBgClass } from "@/lib/mock-data";
+import { getStatusLabel, getStatusBgClass } from "@/lib/status-utils";
 import { ArrowRight, Wifi, WifiOff, Clock, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import NocHeader from "@/components/NocHeader";
 import UptimeHeatmap from "@/components/UptimeHeatmap";
 import LatencyChart from "@/components/LatencyChart";
-import { getUptimeHeatmap, getLatencyData, getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/mock-data";
+import { getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/status-utils";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { ArrowLeft, Globe, Shield, Clock, TrendingUp, Server, Database, Cpu, HardDrive, Network, Cloud } from "lucide-react";
 import { ProviderStatus } from "@/lib/types";
 
@@ -53,8 +54,9 @@ const categoryIcons: Record<string, typeof Server> = {
 
 const AWSPage = () => {
   const navigate = useNavigate();
-  const heatmap = getUptimeHeatmap("aws");
-  const latency = getLatencyData("aws");
+  const { data } = useDashboardData("aws-bedrock");
+  const heatmap = data?.providerHeatmap ?? data?.globalHeatmap ?? [];
+  const latency = data?.providerLatency ?? data?.globalLatency ?? [];
 
   const categories = [...new Set(awsServices.map(s => s.category))];
   const overallStatus: ProviderStatus = awsServices.some(s => s.status === "outage") ? "outage"

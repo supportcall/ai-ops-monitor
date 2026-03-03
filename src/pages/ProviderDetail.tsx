@@ -2,16 +2,29 @@ import { useParams, useNavigate } from "react-router-dom";
 import NocHeader from "@/components/NocHeader";
 import UptimeHeatmap from "@/components/UptimeHeatmap";
 import LatencyChart from "@/components/LatencyChart";
-import { getProviders, getIncidents, getUptimeHeatmap, getLatencyData, getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/mock-data";
-import { ArrowLeft, Globe, Shield, Clock, TrendingUp, Activity } from "lucide-react";
+import { getStatusLabel, getStatusBgClass, getStatusColorClass } from "@/lib/status-utils";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { ArrowLeft, Globe, Shield, Clock, TrendingUp, Activity, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useCallback } from "react";
 
 const ProviderDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const providers = getProviders();
-  const provider = providers.find(p => p.slug === slug);
+  const { data, isLoading, dataUpdatedAt, refetch } = useDashboardData(slug);
 
+  const handleRefresh = useCallback(() => { refetch(); }, [refetch]);
+  const lastChecked = dataUpdatedAt ? new Date(dataUpdatedAt) : new Date();
+
+  if (isLoading || !data) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const provider = data.providers.find(p => p.slug === slug);
   if (!provider) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -20,17 +33,16 @@ const ProviderDetail = () => {
     );
   }
 
-  const heatmap = getUptimeHeatmap(provider.id);
-  const latency = getLatencyData(provider.id);
-  const incidents = getIncidents().filter(i => i.providerId === provider.id);
+  const heatmap = data.providerHeatmap ?? data.globalHeatmap;
+  const latency = data.providerLatency ?? data.globalLatency;
+  const incidents = data.incidents.filter(i => i.providerId === provider.id);
 
   return (
     <div className="min-h-screen bg-background noc-grid-bg relative">
       <div className="scanline fixed inset-0 pointer-events-none z-40 h-[200%]" />
-      <NocHeader />
+      <NocHeader onRefresh={handleRefresh} lastChecked={lastChecked} />
 
       <main className="container mx-auto px-4 py-6 space-y-6 relative z-10">
-        {/* Back + Header */}
         <div>
           <button onClick={() => navigate("/")} className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors mb-4">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
@@ -53,7 +65,6 @@ const ProviderDetail = () => {
               </div>
             </div>
 
-            {/* Stats */}
             <div className="flex gap-4">
               {[
                 { label: "Uptime", value: `${provider.uptimePercent}%`, icon: Globe },
@@ -71,13 +82,11 @@ const ProviderDetail = () => {
           </div>
         </div>
 
-        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <LatencyChart data={latency} title={`${provider.name} Latency (24h)`} />
           <UptimeHeatmap data={heatmap} label={`${provider.name} 90-Day Uptime`} />
         </div>
 
-        {/* Endpoints */}
         <div className="bg-card border border-border rounded-lg overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <h2 className="text-xs font-mono font-semibold text-foreground">Monitored Endpoints</h2>
@@ -98,7 +107,6 @@ const ProviderDetail = () => {
           </div>
         </div>
 
-        {/* Incidents */}
         {incidents.length > 0 && (
           <div className="bg-card border border-border rounded-lg overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
